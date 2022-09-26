@@ -40,24 +40,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-
-// UNCOMMENT FOR LOGIN USER
-// import type { NextPage } from "next";
-// import { trpc } from "../utils/trpc";
-
-// const Home: NextPage = () => {
-//   const { mutateAsync } = trpc.useMutation("user.login");
-
-//   const login = async () => {
-//     const res = await mutateAsync({
-//       email: "johndoe3@gmail.com",
-//       password: "123456789",
-//     });
-
-//     console.log(res);
-//   };
-
-//   return <div onClick={login}>LOGIN</div>;
-// };
-
-// export default Home;
