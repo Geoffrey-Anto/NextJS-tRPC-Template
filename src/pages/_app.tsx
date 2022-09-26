@@ -6,6 +6,7 @@ import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import type { AppRouter } from "../server/router";
 import "../../styles/globals.css";
+// import { trpc } from "../utils/trpc";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return <Component {...pageProps} />;
@@ -39,24 +40,34 @@ export default withTRPC<AppRouter>({
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            staleTime: 60,
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            retryOnMount: false,
+          },
+        },
+      },
 
       // To use SSR properly you need to forward the client's headers to the server
-      // headers: () => {
-      //   if (ctx?.req) {
-      //     const headers = ctx?.req?.headers;
-      //     delete headers?.connection;
-      //     return {
-      //       ...headers,
-      //       "x-ssr": "1",
-      //     };
-      //   }
-      //   return {};
-      // }
+      headers: () => {
+        if (ctx?.req) {
+          const headers = ctx?.req?.headers;
+          delete headers?.connection;
+          return {
+            ...headers,
+            "x-ssr": "1",
+          };
+        }
+        return {};
+      },
     };
   },
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp);

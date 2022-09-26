@@ -3,6 +3,13 @@ import { z } from "zod";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 
+interface UserApiReturnType {
+  id: string;
+  name: string;
+  email: string;
+  createdAt: Date;
+}
+
 export const userRouter = createRouter()
   // GET ALL USERS
   .query("getAll", {
@@ -20,13 +27,19 @@ export const userRouter = createRouter()
       }
       const token = cookie.split("token=")[1];
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+        jwt.verify(token, process.env.JWT_SECRET as string);
       } catch (error) {
         throw new Error("Invalid token");
       }
-      const users = await ctx.prisma.user.findMany({
+      const users = (await ctx.prisma.user.findMany({
         take: input.limit,
-      });
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          createdAt: true,
+        },
+      })) as UserApiReturnType[];
       return users;
     },
   })
@@ -41,7 +54,7 @@ export const userRouter = createRouter()
       password: z.string(),
     }),
 
-    resolve: async ({ input, ctx }) => {
+    resolve: async ({ input, ctx }): Promise<UserApiReturnType> => {
       const isUserExist = await ctx.prisma.user.findUnique({
         where: {
           email: input.email,
@@ -69,6 +82,7 @@ export const userRouter = createRouter()
         id: user.id,
         name: user.name,
         email: user.email,
+        createdAt: user.createdAt,
       };
     },
   })
@@ -78,7 +92,7 @@ export const userRouter = createRouter()
       email: z.string().email({ message: "Enter Valid Email" }),
       password: z.string(),
     }),
-    resolve: async ({ input, ctx }) => {
+    resolve: async ({ input, ctx }): Promise<UserApiReturnType> => {
       const user = await ctx.prisma.user.findUnique({
         where: {
           email: input.email,
@@ -119,6 +133,7 @@ export const userRouter = createRouter()
         id: user.id,
         name: user.name,
         email: user.email,
+        createdAt: user.createdAt,
       };
     },
   })
