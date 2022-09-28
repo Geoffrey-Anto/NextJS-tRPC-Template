@@ -11,9 +11,46 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now())
+  id           String         @id @default(uuid())
+  email        String         @unique
+  name         String
+  password     String
+  kyc          KYC?
+  applications Applications[]
+  createdAt    DateTime       @default(now())
+}
+
+model Bank {
+  id           String         @id @default(uuid())
+  name         String         @unique
+  password     String
+  applications Applications[]
+  createdAt    DateTime       @default(now())
+}
+
+model KYC {
+  id               String   @id @default(uuid())
+  aadharId         String   @unique
+  panId            String   @unique
+  driversLicenseId String   @unique
+  passport         String   @unique
+  createdAt        DateTime @default(now())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+}
+
+model Applications {
+  id     String   @id @default(uuid())
+  status Status   @default(PENDING)
+  time   DateTime @default(now())
+  User   User?    @relation(fields: [userId], references: [id])
+  userId String?
+  Bank   Bank?    @relation(fields: [bankId], references: [id])
+  bankId String?
+}
+
+enum Status {
+  PENDING
+  REJECTED
+  APPROVED
 }
