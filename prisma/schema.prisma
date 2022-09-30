@@ -22,8 +22,10 @@ model User {
 
 model Bank {
   id           String         @id @default(uuid())
-  name         String         @unique
+  name         String
   password     String
+  email        String         @unique
+  ifsc_code    String         @unique
   applications Applications[]
   createdAt    DateTime       @default(now())
 }
@@ -43,10 +45,10 @@ model Applications {
   id     String   @id @default(uuid())
   status Status   @default(PENDING)
   time   DateTime @default(now())
-  User   User?    @relation(fields: [userId], references: [id])
-  userId String?
-  Bank   Bank?    @relation(fields: [bankId], references: [id])
-  bankId String?
+  User   User     @relation(fields: [userId], references: [id])
+  userId String
+  Bank   Bank     @relation(fields: [bankId], references: [id])
+  bankId String
 }
 
 enum Status {

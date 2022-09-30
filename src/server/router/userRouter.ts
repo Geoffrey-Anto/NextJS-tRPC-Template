@@ -126,7 +126,7 @@ export const userRouter = createRouter()
 
       ctx.res.setHeader(
         "Set-Cookie",
-        `token=${token}; path=/; httpOnly; sameSite=strict`
+        `user_token=${token}; path=/; httpOnly; sameSite=strict`
       );
 
       return {
@@ -142,7 +142,7 @@ export const userRouter = createRouter()
     resolve: async ({ ctx }) => {
       ctx.res.setHeader(
         "Set-Cookie",
-        `token=; path=/; httpOnly; sameSite=strict; Max-Age=0`
+        `user_token=; path=/; httpOnly; sameSite=strict; Max-Age=0`
       );
       return true;
     },
