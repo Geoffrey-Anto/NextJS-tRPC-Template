@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createRouter } from "./context";
 import * as jwt from "jsonwebtoken";
 import * as bcrypt from "bcrypt";
+import RSA from "node-rsa";
 
 export const bankRouter = createRouter()
   .query("getAll", {
@@ -73,12 +74,19 @@ export const bankRouter = createRouter()
 
       const hashedPassword = bcrypt.hashSync(password, 12);
 
+      const keys = new RSA({ b: 512 });
+
+      const publicKey = keys.exportKey("public");
+      const privateKey = keys.exportKey("private");
+
       const bank = await ctx.prisma.bank.create({
         data: {
           name,
           password: hashedPassword,
           email,
           ifsc_code,
+          public_key: publicKey,
+          private_key: privateKey,
         },
         select: {
           id: true,

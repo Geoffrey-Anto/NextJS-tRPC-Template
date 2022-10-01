@@ -2,6 +2,7 @@ import { createRouter } from "./context";
 import { z } from "zod";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 interface UserApiReturnType {
   id: string;
@@ -70,11 +71,20 @@ export const userRouter = createRouter()
         parseInt(process.env.SALT_ROUNDS as string)
       );
 
+      const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+        modulusLength: 4096,
+      });
+
+      const priv = privateKey.export({ type: "pkcs1", format: "pem" });
+      const pub = publicKey.export({ type: "pkcs1", format: "pem" });
+
       const user = await ctx.prisma.user.create({
         data: {
           name: input.name,
           email: input.email,
           password: hashedPassword,
+          private_key: priv as string,
+          public_key: pub as string,
         },
       });
 
