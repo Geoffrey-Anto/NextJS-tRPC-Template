@@ -27,7 +27,6 @@ const UserLogin = () => {
   const router = useRouter();
 
   const onSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    await createToken();
     e.preventDefault();
     try {
       const response = await createKYC(user);

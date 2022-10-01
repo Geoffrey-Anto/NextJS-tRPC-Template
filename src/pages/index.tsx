@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
@@ -37,6 +37,15 @@ const Home: NextPage = () => {
       )}
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    props: {},
+    redirect: {
+      destination: "/landing",
+    },
+  };
 };
 
 export default Home;
