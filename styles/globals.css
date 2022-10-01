@@ -11,3 +11,8 @@ body {
   background-attachment: fixed;
   background-size: cover;
 }
+
+.font__titillium {
+  font-family: "Titillium Web", sans-serif;
+
+}

@@ -1,5 +1,5 @@
 import { GetServerSideProps } from "next";
-import React from "react";
+import React,{useState} from "react";
 import { trpc } from "../../utils/trpc";
 import * as jwt from "jsonwebtoken";
 
@@ -8,7 +8,34 @@ interface Props {
 }
 
 const Dashboard = ({ message }: Props) => {
-  return <div>{message ? message : "Dashboard"}</div>;
+  const { data, isLoading } = trpc.useQuery([
+    "bank.getAll",
+    {
+      take: 9,
+    },
+  ]);
+  
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <>
+    <h1 className="p-6 font-bold text-center m-4 text-3xl" >Apply For KYC In Banks Across The Country</h1>
+    <div className="flex justify-center items-center space-x-10 text-center p-2 font__titillium flex-wrap gap-6 ">
+      
+      {data?.map((data) => {
+        return <div className="flex flex-row bg-white p-4 rounded-xl ">
+        <div className="flex flex-col gap-2">
+        <h1 className="p-2 font-bold">Bank Name:{data.name}</h1>
+        <h2 className="p-2 font-semibold">Ifsc Code: {data.ifsc_code}</h2>
+        <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">Apply For KYC</button>
+        </div>
+        </div>
+      })}
+      <div></div>
+    </div>
+    </>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

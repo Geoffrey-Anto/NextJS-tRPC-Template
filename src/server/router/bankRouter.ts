@@ -10,19 +10,19 @@ export const bankRouter = createRouter()
       take: z.number().min(0, { message: "Enter Number Greater than 0" }),
     }),
     resolve: async ({ input, ctx }) => {
-      const cookie = ctx.req.headers.cookie;
-      if (!cookie) {
-        throw new Error("No cookie");
-      }
-      if (!cookie.includes("bank_token")) {
-        throw new Error("No token");
-      }
-      const token = cookie.split("bank_token=")[1];
-      try {
-        jwt.verify(token, process.env.JWT_SECRET as string);
-      } catch (error) {
-        throw new Error("Invalid token");
-      }
+      // const cookie = ctx.req.headers.cookie;
+      // if (!cookie) {
+      //   throw new Error("No cookie");
+      // }
+      // if (!cookie.includes("bank_token")) {
+      //   throw new Error("No token");
+      // }
+      // const token = cookie.split("bank_token=")[1];
+      // try {
+      //   jwt.verify(token, process.env.JWT_SECRET as string);
+      // } catch (error) {
+      //   throw new Error("Invalid token");
+      // }
 
       const { take } = input;
 
@@ -49,8 +49,9 @@ export const bankRouter = createRouter()
         const temp = {
           id: bank.id,
           createdAt: bank.createdAt,
-          name: bank.createdAt,
+          name: bank.name,
           applications: bank.applications,
+          ifsc_code : bank.ifsc_code,
         };
         return temp;
       });
