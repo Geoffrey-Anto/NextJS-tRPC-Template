@@ -107,6 +107,9 @@ export const userRouter = createRouter()
         where: {
           email: input.email,
         },
+        include: {
+          kyc: true,
+        },
       });
 
       if (!user) {
@@ -134,10 +137,17 @@ export const userRouter = createRouter()
         }
       );
 
-      ctx.res.setHeader(
-        "Set-Cookie",
-        `user_token=${token}; path=/; httpOnly; sameSite=strict`
-      );
+      if (user.kyc) {
+        ctx.res.setHeader("Set-Cookie", [
+          `kyc_token=verified; path=/; httpOnly; sameSite=strict`,
+          `user_token=${token}; path=/; httpOnly; sameSite=strict`,
+        ]);
+      } else {
+        ctx.res.setHeader(
+          "Set-Cookie",
+          `user_token=${token}; path=/; httpOnly; sameSite=strict`
+        );
+      }
 
       return {
         id: user.id,
